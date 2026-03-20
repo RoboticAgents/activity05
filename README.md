@@ -1,6 +1,6 @@
 ## Activity 5: ROS2 Environment Setup & First Simulation
 
-This activity is a **hands-on supplement to the Week 10 ROS2 intro slides**: [/slides/ros2intro.html](/slides/ros2intro.html).
+This activity is a **hands-on supplement to the Week 10 ROS2 intro slides**: [ROS2 Intro Slides](https://learnroboticagents.com/slides/ros2intro.html).
 
 You will set up the course ROS2 simulation environment and practice the same core concepts from lecture (nodes, topics, messages, publish/subscribe) by driving a TurtleBot3 in Gazebo.
 

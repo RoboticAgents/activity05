@@ -43,9 +43,9 @@ Environment used in this activity:
 
 Install Docker Desktop for your OS:
 
-- **Windows**: [Docker Desktop for Windows](https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe) (requires WSL2 — Docker will prompt you to enable it)
+- **Windows**: [Docker Desktop for Windows](https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe) (requires WSL2 - Docker will prompt you to enable it)
 - **macOS (Intel)**: [Docker Desktop for Mac (Intel)](https://desktop.docker.com/mac/main/amd64/Docker.dmg)
-- **macOS (Apple Silicon / M1–M4)**: [Docker Desktop for Mac (Apple Silicon)](https://desktop.docker.com/mac/main/arm64/Docker.dmg)
+- **macOS (Apple Silicon / M1-M4)**: [Docker Desktop for Mac (Apple Silicon)](https://desktop.docker.com/mac/main/arm64/Docker.dmg)
 - **Linux**: [Docker Desktop for Linux](https://docs.docker.com/desktop/install/linux-install/)
 
 After installation:
@@ -59,42 +59,39 @@ docker --version
 docker compose version
 ```
 
-### Step 2: Clone the Course ROS2 Repository
+### Step 2: Use the Activity Folder
+
+From this repository root, run:
 
 ```bash
-git clone git@github.com:RoboticAgents/ros2-environment.git
-cd ros2-environment
+cd activity05
 ```
 
-### Step 3 (Recommended): Pre-Build the Image
+This folder includes `docker-compose.yml` for launching the environment.
 
-To save class time, start the build now (first run downloads ~4 GB and can take 5–20 minutes):
+### Step 3 (Recommended): Pre-Pull the Image
+
+To save class time, start the environment now (first run pulls ~4 GB and can take 5-20 minutes):
 
 ```bash
-docker compose up --build
+docker compose up
 ```
 
-Once you see the desktop running, press `Ctrl+C` to stop. The built image is cached for class.
-
-Shortcut:
-
-```bash
-make up
-```
+Once you see the desktop running, press `Ctrl+C` to stop. The image is cached for class.
 
 ---
 
 ## Part 1: Start the ROS2 Environment
 
-### 1.1 Build and Launch
+### 1.1 Launch
 
-Open a terminal in the `ros2-environment` directory and run:
+Open a terminal in the `activity05` directory and run:
 
 ```bash
-docker compose up --build
+docker compose up
 ```
 
-**First time:** This downloads the base image and installs ROS2 packages. You'll see download progress in your terminal. Wait for it to complete.
+**First time:** This pulls the pre-built image. You'll see download progress in your terminal. Wait for it to complete.
 
 **Subsequent times:** Starts almost instantly because the image is cached.
 
@@ -106,7 +103,7 @@ Open your web browser and go to:
 
 You should see a full Ubuntu desktop running inside your browser.
 
-Right-click desktop → **Terminal**.
+Right-click desktop -> **Terminal**.
 
 > **Why Docker?** ROS2 runs natively on Ubuntu Linux. Docker gives everyone the same environment across Windows/macOS/Linux and avoids local package/version conflicts.
 
@@ -130,7 +127,7 @@ ros2 launch turtlebot3_gazebo empty_world.launch.py
 
 Wait for Gazebo to fully load. The robot should be stationary in the center.
 
-If the robot drifts while you're setting up teleop, pause Gazebo (⏸), then unpause when ready.
+If the robot drifts while you're setting up teleop, pause Gazebo, then unpause when ready.
 
 Once this works, try additional worlds:
 
@@ -150,7 +147,7 @@ You should see:
 
 > **Performance note:** If Gazebo is laggy, use `empty_world.launch.py`, keep the browser window smaller, and use low-lag mode in Part 5.
 
-📸 **Screenshot 1:** Take a screenshot of the Gazebo window showing the TurtleBot3 in the world.
+**Screenshot 1:** Take a screenshot of the Gazebo window showing the TurtleBot3 in the world.
 
 ---
 
@@ -158,7 +155,7 @@ You should see:
 
 ### 3.1 Open a Second Terminal
 
-**Right-click** the VNC desktop → **Terminal** to open another terminal window.
+**Right-click** the VNC desktop -> **Terminal** to open another terminal window.
 
 ### 3.2 Launch Keyboard Teleoperation
 
@@ -168,7 +165,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true
 
 You should see control instructions:
 
-```
+```text
 Control Your TurtleBot3!
 ---------------------------
 Moving around:
@@ -183,15 +180,15 @@ k : force stop
 
 ### 3.3 Drive Around
 
-- **`i`** — move forward
-- **`j`** — turn left
-- **`l`** — turn right
-- **`,`** — move backward
-- **`k`** — stop
+- **`i`** - move forward
+- **`j`** - turn left
+- **`l`** - turn right
+- **`,`** - move backward
+- **`k`** - stop
 
 Drive the robot around the world. Try navigating through gaps between obstacles without colliding.
 
-📸 **Screenshot 2:** Take a screenshot showing the robot in a different position after driving it around.
+**Screenshot 2:** Take a screenshot showing the robot in a different position after driving it around.
 
 ---
 
@@ -207,7 +204,7 @@ Open a **third terminal** in the VNC desktop.
 ros2 node list
 ```
 
-📝 **Write down** the list of nodes you see. Nodes are individual processes that each handle one task (e.g., simulating the robot, processing sensor data).
+**Write down** the list of nodes you see. Nodes are individual processes that each handle one task (e.g., simulating the robot, processing sensor data).
 
 ### 4.2 List Active Topics
 
@@ -215,7 +212,7 @@ ros2 node list
 ros2 topic list
 ```
 
-📝 **Write down** the list of topics. Topics are named communication channels that nodes use to send and receive messages.
+**Write down** the list of topics. Topics are named communication channels that nodes use to send and receive messages.
 
 ### 4.3 Inspect Sensor Data
 
@@ -225,7 +222,7 @@ View one message from the robot's simulated lidar sensor:
 ros2 topic echo /scan --once
 ```
 
-You'll see a `LaserScan` message with an array of distance values — these are what the robot "sees" around it.
+You'll see a `LaserScan` message with an array of distance values - these are what the robot "sees" around it.
 
 ### 4.4 Watch Velocity Commands
 
@@ -237,7 +234,7 @@ ros2 topic echo /cmd_vel
 
 Now switch to the **teleop terminal** and press `i` or `j`. You should see velocity messages appear in real time in the echo terminal.
 
-📝 **Write down** one velocity message. What do `linear.x` and `angular.z` represent?
+**Write down** one velocity message. What do `linear.x` and `angular.z` represent?
 
 > **Hint:** `linear.x` = forward/backward speed (m/s). `angular.z` = rotation speed (rad/s).
 
@@ -245,19 +242,21 @@ Now switch to the **teleop terminal** and press `i` or `j`. You should see veloc
 
 ## Part 5: Low-Lag Mode (Recommended)
 
-If simulation performance is poor, stop the container and run:
+If simulation performance is poor, run:
 
 ```bash
 docker compose -f docker-compose.yml -f compose.lowlag.yml up
 ```
 
-Shortcut:
+Use this `compose.lowlag.yml` file in this folder:
 
-```bash
-make lowlag
+```yaml
+services:
+        ros2-sim:
+                environment:
+                        - RESOLUTION=1024x576
+                shm_size: "2gb"
 ```
-
-This uses lower resolution (`1024x576`) and larger shared memory (`2gb`).
 
 ---
 
@@ -294,7 +293,7 @@ You should see a `parameter_bridge` node.
 Before you're done, verify that you can answer **YES** to all of these:
 
 - [ ] Docker Desktop is installed and running on my laptop
-- [ ] `docker compose up --build` successfully starts the ROS2 environment
+- [ ] `docker compose up` successfully starts the ROS2 environment
 - [ ] I can access the VNC desktop at `http://localhost:6080`
 - [ ] Gazebo launches with the TurtleBot3 in `empty_world`
 - [ ] I can drive the robot with keyboard teleoperation
@@ -302,7 +301,7 @@ Before you're done, verify that you can answer **YES** to all of these:
 - [ ] `ros2 topic list` shows active topics
 - [ ] I can echo sensor data from `/scan`
 
-**Submit:** Post your two screenshots and the list of nodes/topics to the class Discord channel.
+**Submit:** Fill out `reflection.md` in this folder with your two screenshots, command outputs, and short reflection.
 
 ---
 
@@ -310,7 +309,7 @@ Before you're done, verify that you can answer **YES** to all of these:
 
 | Concept | What It Is |
 |:---|:---|
-| **ROS2** | Robot Operating System 2 — middleware that connects robot software components via a publish/subscribe messaging system |
+| **ROS2** | Robot Operating System 2 - middleware that connects robot software components via a publish/subscribe messaging system |
 | **Node** | A single process that performs one task (e.g., reading a sensor, controlling a motor, planning a path) |
 | **Topic** | A named communication channel; nodes **publish** data to topics and **subscribe** to receive data |
 | **Message** | Structured data sent over a topic (e.g., `TwistStamped` for velocity commands, `LaserScan` for lidar data) |
@@ -327,17 +326,4 @@ When you're done:
 1. Press `Ctrl+C` in each VNC terminal to stop running commands
 2. In your **host terminal** (not VNC), press `Ctrl+C` where `docker compose up` is running
 3. To fully remove the container: `docker compose down`
-4. The built image stays cached — next time `docker compose up` starts instantly
-
----
-
-## What's Next
-
-This environment is your robotics simulation sandbox for upcoming ROS2 work. It connects directly to the trajectory in the `ros2intro` slides:
-
-- SLAM mapping
-- localization
-- path planning
-- autonomous navigation with Nav2
-
-Keep Docker Desktop installed and the `ros2-environment` repository on your machine.
+4. The image stays cached - next time `docker compose up` starts instantly

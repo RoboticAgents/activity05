@@ -1,35 +1,20 @@
 # Activity 5 Reflection
 
-Use this file to submit your Activity 5 evidence and short reflection.
+## Name:
 
-## Student Info
+## Screenshots
 
-- Name:
-- Date:
+Add your two screenshots to this folder and embed them below.
 
----
+Screenshot 1 - Gazebo with TurtleBot3:
 
-## Screenshot Evidence
-
-### Screenshot 1 — Gazebo launched
-Embed image here:
-
-```md
 ![Gazebo with TurtleBot3](./screenshot1.png)
-```
 
-### Screenshot 2 — Robot moved to a new position
-Embed image here:
+Screenshot 2 - Robot after teleop movement:
 
-```md
 ![Robot after teleop movement](./screenshot2.png)
-```
-
----
 
 ## Command Output
-
-Paste terminal output for each command.
 
 ### `ros2 node list`
 
@@ -50,18 +35,13 @@ Paste terminal output for each command.
 ```
 
 ### `ros2 topic echo /cmd_vel`
-Paste one representative velocity message while teleop is running.
 
 ```text
-(paste one message here)
+(paste one velocity message here)
 ```
 
----
+## Reflection
 
-## Short Reflection (3–6 sentences)
+1. Is there any part of the set up that did not work for you?
 
-1. What part of setup took the longest and why?
 2. What did you observe about nodes/topics/messages while driving?
-3. One thing that was unclear from slides but clearer after hands-on practice.
-
-Write your response here.

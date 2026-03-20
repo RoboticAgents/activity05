@@ -4,7 +4,7 @@ This activity is a **hands-on supplement to the Week 10 ROS2 intro slides**: [/s
 
 You will set up the course ROS2 simulation environment and practice the same core concepts from lecture (nodes, topics, messages, publish/subscribe) by driving a TurtleBot3 in Gazebo.
 
-**Due:** Complete during class, March 17th
+**Due:** Monday, March 23 at 11:00 AM
 
 ---
 
@@ -20,26 +20,9 @@ By completing this activity, you will:
 
 ---
 
-## Environment Reference
+## Part 1: Install Docker and Start the Environment
 
-Use the course README as the source of truth for setup and troubleshooting:
-
-- `ros2-environment/README.md`
-
-Environment used in this activity:
-
-- Ubuntu 24.04
-- ROS2 Jazzy
-- Gazebo Harmonic (LTS)
-- TurtleBot3 Burger
-- Nav2 + SLAM Toolbox
-- noVNC browser desktop
-
----
-
-## Pre-Requisites (Complete BEFORE Class)
-
-### Step 1: Install Docker Desktop
+### 1.1 Install Docker Desktop
 
 Install Docker Desktop for your OS:
 
@@ -48,76 +31,41 @@ Install Docker Desktop for your OS:
 - **macOS (Apple Silicon / M1-M4)**: [Docker Desktop for Mac (Apple Silicon)](https://desktop.docker.com/mac/main/arm64/Docker.dmg)
 - **Linux**: [Docker Desktop for Linux](https://docs.docker.com/desktop/install/linux-install/)
 
-After installation:
+After installation, launch Docker Desktop and let it finish starting up.
 
-1. Launch Docker Desktop
-2. Let it finish starting up
-3. Verify:
+> **Why Docker?** ROS2 runs natively on Ubuntu Linux. Docker gives everyone the same environment across Windows/macOS/Linux and avoids local package/version conflicts.
 
-```bash
-docker --version
-docker compose version
-```
+### 1.2 Launch the Environment
 
-### Step 2: Use the Activity Folder
-
-From this repository root, run:
+Open a terminal on your host machine and navigate to this folder:
 
 ```bash
 cd activity05
 ```
 
-This folder includes `docker-compose.yml` for launching the environment.
-
-### Step 3 (Recommended): Pre-Pull the Image
-
-To save class time, start the environment now (first run pulls ~4 GB and can take 5-20 minutes):
+Start the container:
 
 ```bash
 docker compose up
 ```
 
-Once you see the desktop running, press `Ctrl+C` to stop. The image is cached for class.
-
----
-
-## Part 1: Start the ROS2 Environment
-
-### 1.1 Launch
-
-Open a terminal in the `activity05` directory and run:
-
-```bash
-docker compose up
-```
-
-**First time:** This pulls the pre-built image. You'll see download progress in your terminal. Wait for it to complete.
+**First time:** This pulls the pre-built image (~4 GB). You'll see download progress in your terminal. Wait for it to complete.
 
 **Subsequent times:** Starts almost instantly because the image is cached.
 
-### 1.2 Connect via Browser (noVNC)
+### 1.3 Connect via Browser (noVNC)
 
 Open your web browser and go to:
 
-### **[http://localhost:6080](http://localhost:6080)**
+**[http://localhost:6080](http://localhost:6080)**
 
-You should see a full Ubuntu desktop running inside your browser.
-
-Right-click desktop -> **Terminal**.
-
-> **Why Docker?** ROS2 runs natively on Ubuntu Linux. Docker gives everyone the same environment across Windows/macOS/Linux and avoids local package/version conflicts.
-
-> **Troubleshooting:** If port 6080 is in use, edit `docker-compose.yml` and change `"6080:80"` to `"6081:80"`, then access `http://localhost:6081`.
+You should see a full Ubuntu desktop running inside your browser. Right-click the desktop and select **Terminal** to open a terminal.
 
 ---
 
 ## Part 2: Launch TurtleBot3 in Gazebo
 
-### 2.1 Open a Terminal
-
 In the VNC desktop (the browser window), **right-click** the desktop and select **Terminal** (or find LXTerminal in the application menu at the bottom).
-
-### 2.2 Launch the Simulation
 
 Start in the low-complexity world first:
 
@@ -145,7 +93,7 @@ You should see:
 - A small circular robot (**TurtleBot3 Burger**) in the center
 - Walls and obstacles around the robot
 
-> **Performance note:** If Gazebo is laggy, use `empty_world.launch.py`, keep the browser window smaller, and use low-lag mode in Part 5.
+> **Performance note:** If Gazebo is laggy, use `empty_world.launch.py`, keep the browser window smaller, and see the **Troubleshooting** section for low-lag mode.
 
 **Screenshot 1:** Take a screenshot of the Gazebo window showing the TurtleBot3 in the world.
 
@@ -153,11 +101,9 @@ You should see:
 
 ## Part 3: Drive the Robot
 
-### 3.1 Open a Second Terminal
+**Right-click** the VNC desktop -> **Terminal** to open a second terminal window.
 
-**Right-click** the VNC desktop -> **Terminal** to open another terminal window.
-
-### 3.2 Launch Keyboard Teleoperation
+Launch keyboard teleoperation:
 
 ```bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true
@@ -178,7 +124,7 @@ j/l : increase/decrease angular velocity
 k : force stop
 ```
 
-### 3.3 Drive Around
+Drive the robot around:
 
 - **`i`** - move forward
 - **`j`** - turn left
@@ -186,7 +132,7 @@ k : force stop
 - **`,`** - move backward
 - **`k`** - stop
 
-Drive the robot around the world. Try navigating through gaps between obstacles without colliding.
+Try navigating through gaps between obstacles without colliding.
 
 **Screenshot 2:** Take a screenshot showing the robot in a different position after driving it around.
 
@@ -240,54 +186,6 @@ Now switch to the **teleop terminal** and press `i` or `j`. You should see veloc
 
 ---
 
-## Part 5: Low-Lag Mode (Recommended)
-
-If simulation performance is poor, run:
-
-```bash
-docker compose -f docker-compose.yml -f compose.lowlag.yml up
-```
-
-Use this `compose.lowlag.yml` file in this folder:
-
-```yaml
-services:
-        ros2-sim:
-                environment:
-                        - RESOLUTION=1024x576
-                shm_size: "2gb"
-```
-
----
-
-## Part 6: Teleop Troubleshooting (If Robot Does Not Move)
-
-Most common cause: message type mismatch. The Gazebo bridge expects `TwistStamped` on `/cmd_vel`.
-
-1. Verify `/cmd_vel` message types:
-
-```bash
-ros2 topic info /cmd_vel --verbose
-```
-
-Both publisher and subscriber should use `geometry_msgs/msg/TwistStamped`.
-
-2. Confirm messages are flowing while pressing teleop keys:
-
-```bash
-ros2 topic echo /cmd_vel
-```
-
-3. Verify bridge node exists:
-
-```bash
-ros2 node list | grep bridge
-```
-
-You should see a `parameter_bridge` node.
-
----
-
 ## Verification Checklist
 
 Before you're done, verify that you can answer **YES** to all of these:
@@ -327,3 +225,62 @@ When you're done:
 2. In your **host terminal** (not VNC), press `Ctrl+C` where `docker compose up` is running
 3. To fully remove the container: `docker compose down`
 4. The image stays cached - next time `docker compose up` starts instantly
+
+---
+
+## Troubleshooting
+
+### Docker Daemon Not Running
+
+If you see `failed to connect to the docker API ... docker.sock ... no such file or directory`:
+
+1. Open Docker Desktop
+2. Wait until it shows "Engine running"
+3. Re-run `docker compose up`
+
+### Port 6080 Already in Use
+
+Edit `docker-compose.yml` and change `"6080:80"` to `"6081:80"`, then access `http://localhost:6081`.
+
+### Low-Lag Mode
+
+If Gazebo is slow, stop the container (`Ctrl+C`) and restart with the low-lag override file included in this folder:
+
+```bash
+docker compose -f docker-compose.yml -f compose.lowlag.yml up
+```
+
+This uses lower resolution (`1024x576`) and larger shared memory (`2gb`).
+
+### Robot Does Not Move with Teleop
+
+The most common cause is a message type mismatch. The Gazebo bridge expects `TwistStamped` on `/cmd_vel`.
+
+1. Make sure you launched teleop with the `stamped` flag:
+
+   ```bash
+   ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -p stamped:=true
+   ```
+
+2. Verify `/cmd_vel` message types (both publisher and subscriber should show `geometry_msgs/msg/TwistStamped`):
+
+   ```bash
+   ros2 topic info /cmd_vel --verbose
+   ```
+
+3. Verify the bridge node exists:
+
+   ```bash
+   ros2 node list | grep bridge
+   ```
+
+   You should see a `parameter_bridge` node.
+
+4. **Send a velocity command directly** to test whether the bridge and simulation are working, bypassing teleop entirely:
+
+   ```bash
+   ros2 topic pub --once /cmd_vel geometry_msgs/msg/TwistStamped \
+     "{header: {stamp: {sec: 0, nanosec: 0}, frame_id: ''}, twist: {linear: {x: 0.2, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 0.0}}}"
+   ```
+
+   If the robot moves, the simulation is fine and the issue is with your teleop terminal (make sure it has keyboard focus).
